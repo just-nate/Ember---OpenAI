@@ -40,6 +40,12 @@ export const listByJob = query({
       .take(100),
 });
 
+export const get = query({
+  args: { resultId: v.id("imageResults") },
+  returns: v.union(imageResultValidator, v.null()),
+  handler: async (ctx, args) => await ctx.db.get(args.resultId),
+});
+
 export const retry = mutation({
   args: { resultId: v.id("imageResults") },
   returns: v.id("imageResults"),

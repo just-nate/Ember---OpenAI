@@ -1,4 +1,5 @@
-import { Download } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Download, Maximize2 } from "lucide-react";
 import { CopyUrlButton } from "@/components/copy-url-button";
 import { JobStatusBadge } from "@/components/job-status-badge";
 import { RetryButton } from "@/components/retry-button";
@@ -14,7 +15,11 @@ export function ResultCard({
   return (
     <article className="group overflow-hidden border border-border bg-black/50 transition duration-500 hover:-translate-y-1 hover:border-primary/70">
       {result.imageUrl ? (
-        <div className="overflow-hidden border-border border-b bg-black">
+        <Link
+          className="block overflow-hidden border-border border-b bg-black"
+          params={{ jobId: job._id, resultId: result._id }}
+          to="/jobs/$jobId/results/$resultId"
+        >
           <img
             alt={`Variant ${result.variantIndex + 1} for: ${job.prompt}`}
             className="aspect-square w-full object-cover transition duration-700 group-hover:scale-105"
@@ -22,7 +27,7 @@ export function ResultCard({
             src={result.imageUrl}
             width={1024}
           />
-        </div>
+        </Link>
       ) : (
         <div className="grid aspect-square place-items-center border-border border-b bg-[radial-gradient(circle_at_50%_45%,rgba(21,112,239,0.2),transparent_35%),#030303] text-muted-foreground">
           <JobStatusBadge status={result.status} />
@@ -38,6 +43,14 @@ export function ResultCard({
         <div className="mt-4 flex flex-wrap gap-2">
           {result.imageUrl ? (
             <>
+              <Link
+                className="inline-flex items-center gap-2 rounded-sm border border-border px-3 py-2 font-bold text-sm transition hover:border-primary hover:text-primary"
+                params={{ jobId: job._id, resultId: result._id }}
+                to="/jobs/$jobId/results/$resultId"
+              >
+                <Maximize2 aria-hidden="true" className="size-4" />
+                Open
+              </Link>
               <a
                 className="inline-flex items-center gap-2 rounded-sm border border-border px-3 py-2 font-bold text-sm transition hover:border-primary hover:text-primary"
                 download
