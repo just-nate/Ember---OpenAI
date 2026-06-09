@@ -1,90 +1,37 @@
-# Welcome to your Convex functions directory!
+# Convex backend
 
-Write your Convex functions here.
-See https://docs.convex.dev/functions for more.
+This directory contains Ember's realtime state and storage boundary.
 
-A query function that takes two arguments looks like:
+Convex owns:
 
-```ts
-// convex/myFunctions.ts
-import { query } from "./_generated/server";
-import { v } from "convex/values";
+- job metadata;
+- image result metadata;
+- activity timeline records;
+- setup health checks;
+- protected HTTP callbacks from Trigger.dev;
+- Cloudflare R2 storage handoff through `@convex-dev/r2`.
 
-export const myQueryFunction = query({
-  // Validators for arguments.
-  args: {
-    first: v.number(),
-    second: v.string(),
-  },
+Trigger.dev owns the long-running image-generation work. Convex should enqueue Trigger runs and handle callbacks, but it should not call OpenAI directly.
 
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Read the database as many times as you need here.
-    // See https://docs.convex.dev/database/reading-data.
-    const documents = await ctx.db.query("tablename").collect();
+## Useful commands
 
-    // Arguments passed from the client are properties of the args object.
-    console.log(args.first, args.second);
-
-    // Write arbitrary JavaScript here: filter, aggregate, build derived data,
-    // remove non-public properties, or create new objects.
-    return documents;
-  },
-});
+```bash
+bun run convex:dev
+bunx convex env list
+bunx convex typecheck
 ```
 
-Using this query function in a React component looks like:
+## Required Convex environment variables
 
-```ts
-const data = useQuery(api.myFunctions.myQueryFunction, {
-  first: 10,
-  second: "hello",
-});
+```bash
+CONVEX_WORKER_SECRET=
+TRIGGER_SECRET_KEY=
+R2_TOKEN=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_ENDPOINT=
+R2_BUCKET=
+R2_PUBLIC_BASE_URL=
 ```
 
-A mutation function looks like:
-
-```ts
-// convex/myFunctions.ts
-import { mutation } from "./_generated/server";
-import { v } from "convex/values";
-
-export const myMutationFunction = mutation({
-  // Validators for arguments.
-  args: {
-    first: v.string(),
-    second: v.string(),
-  },
-
-  // Function implementation.
-  handler: async (ctx, args) => {
-    // Insert or modify documents in the database here.
-    // Mutations can also read from the database like queries.
-    // See https://docs.convex.dev/database/writing-data.
-    const message = { body: args.first, author: args.second };
-    const id = await ctx.db.insert("messages", message);
-
-    // Optionally, return a value from your mutation.
-    return await ctx.db.get("messages", id);
-  },
-});
-```
-
-Using this mutation function in a React component looks like:
-
-```ts
-const mutation = useMutation(api.myFunctions.myMutationFunction);
-function handleButtonPress() {
-  // fire and forget, the most common way to use mutations
-  mutation({ first: "Hello!", second: "me" });
-  // OR
-  // use the result once the mutation has completed
-  mutation({ first: "Hello!", second: "me" }).then((result) =>
-    console.log(result),
-  );
-}
-```
-
-Use the Convex CLI to push your functions to a deployment. See everything
-the Convex CLI can do by running `npx convex -h` in your project root
-directory. To learn more, launch the docs with `npx convex docs`.
+`R2_PUBLIC_BASE_URL` is optional. Without it, Ember serves image views through Convex HTTP actions that generate fresh signed R2 URLs.
