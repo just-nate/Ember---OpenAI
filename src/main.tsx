@@ -30,7 +30,7 @@ if (!rootElement) {
 createRoot(rootElement).render(
   <StrictMode>
     <ConvexProvider client={convex}>
-      <ThemeProvider>
+      <ThemeProvider defaultTheme="dark">
         <RouterProvider router={router} />
       </ThemeProvider>
     </ConvexProvider>

@@ -1,4 +1,5 @@
 import { useMutation } from "convex/react";
+import { ImagePlus, SlidersHorizontal, Sparkles } from "lucide-react";
 import { type ComponentProps, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
@@ -18,6 +19,8 @@ export function JobForm() {
   const [format, setFormat] = useState<(typeof formats)[number]>("png");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const characterCount = prompt.length;
 
   const handleSubmit = async (event: FormSubmitEvent) => {
     event.preventDefault();
@@ -44,31 +47,54 @@ export function JobForm() {
   };
 
   return (
-    <form className="mt-8 grid gap-5" onSubmit={handleSubmit}>
-      <label className="grid gap-2 font-medium text-sm" htmlFor="prompt">
-        Prompt
-        <textarea
-          className="min-h-36 rounded-2xl border bg-background p-4 font-normal text-base outline-none transition focus:ring-2 focus:ring-ring"
-          id="prompt"
-          onChange={(event) => setPrompt(event.target.value)}
-          placeholder="Describe the image direction, mood, subject, and use case..."
-          required
-          value={prompt}
-        />
-      </label>
-      <div className="grid gap-4 sm:grid-cols-4">
-        <label className="grid gap-2 font-medium text-sm" htmlFor="count">
-          Count
-          <input
-            className="rounded-xl border bg-background px-3 py-2 font-normal"
-            id="count"
-            max={4}
-            min={1}
-            onChange={(event) => setCount(Number(event.target.value))}
-            type="number"
-            value={count}
+    <form className="mt-8 grid gap-6" onSubmit={handleSubmit}>
+      <div className="ember-panel overflow-hidden rounded-sm">
+        <div className="border-border border-b px-5 py-4">
+          <label className="ember-kicker" htmlFor="prompt">
+            Prompt
+          </label>
+        </div>
+        <div className="relative">
+          <textarea
+            aria-describedby="prompt-count"
+            className="min-h-[34rem] w-full resize-y bg-black/80 px-5 py-6 text-lg leading-8 outline-none transition placeholder:text-muted-foreground focus:bg-black/90 md:min-h-[42rem]"
+            id="prompt"
+            maxLength={4000}
+            onChange={(event) => setPrompt(event.target.value)}
+            placeholder="Describe the image you want to generate in detail..."
+            required
+            value={prompt}
           />
-        </label>
+          <p
+            className="absolute right-5 bottom-4 text-muted-foreground text-xs"
+            id="prompt-count"
+          >
+            {characterCount.toLocaleString()}/4,000
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-3 border-border border-y py-4 sm:grid-cols-[0.8fr_1fr_1fr_1fr]">
+        <fieldset className="grid gap-2">
+          <legend className="ember-kicker mb-2">Count</legend>
+          <div className="grid grid-cols-3 overflow-hidden rounded-sm border border-border bg-black/70">
+            {[1, 2, 4].map((option) => (
+              <button
+                aria-pressed={count === option}
+                className={`px-3 py-2 font-bold text-sm transition ${
+                  count === option
+                    ? "bg-white/18 text-foreground"
+                    : "text-muted-foreground hover:bg-white/8 hover:text-foreground"
+                }`}
+                key={option}
+                onClick={() => setCount(option)}
+                type="button"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </fieldset>
         <SelectField
           id="size"
           label="Size"
@@ -91,14 +117,28 @@ export function JobForm() {
           value={format}
         />
       </div>
+
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-2">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/8 px-3 py-2 font-bold text-sm">
+            <SlidersHorizontal aria-hidden="true" className="size-4" />
+            Default Style
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/5 px-3 py-2 text-muted-foreground text-sm">
+            <ImagePlus aria-hidden="true" className="size-4" />
+            R2 storage
+          </span>
+        </div>
+        <button
+          className="inline-flex min-w-40 items-center justify-center gap-2 rounded-sm bg-white px-6 py-3 font-black text-black transition duration-300 hover:scale-[1.02] hover:bg-primary hover:text-primary-foreground disabled:opacity-60"
+          disabled={isSubmitting}
+          type="submit"
+        >
+          <Sparkles aria-hidden="true" className="size-5" />
+          {isSubmitting ? "Starting" : "Create"}
+        </button>
+      </div>
       {error ? <p className="text-destructive text-sm">{error}</p> : null}
-      <button
-        className="rounded-full bg-primary px-5 py-3 font-medium text-primary-foreground disabled:opacity-60"
-        disabled={isSubmitting}
-        type="submit"
-      >
-        {isSubmitting ? "Starting..." : "Create with Ember"}
-      </button>
     </form>
   );
 }
@@ -117,10 +157,10 @@ function SelectField({
   value: string;
 }) {
   return (
-    <label className="grid gap-2 font-medium text-sm" htmlFor={id}>
-      {label}
+    <label className="grid gap-2" htmlFor={id}>
+      <span className="ember-kicker">{label}</span>
       <select
-        className="rounded-xl border bg-background px-3 py-2 font-normal"
+        className="ember-field h-10 rounded-sm px-3 font-bold text-sm uppercase tracking-[0.06em]"
         id={id}
         onChange={(event) => onChange(event.target.value)}
         value={value}

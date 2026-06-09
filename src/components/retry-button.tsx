@@ -1,4 +1,5 @@
 import { useMutation } from "convex/react";
+import { RotateCcw } from "lucide-react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 
@@ -20,11 +21,12 @@ export function RetryButton(props: RetryButtonProps) {
 
   return (
     <button
-      className="rounded-full bg-primary px-5 py-3 font-medium text-primary-foreground"
+      className="inline-flex items-center gap-2 rounded-sm bg-white px-4 py-2 font-black text-black transition hover:bg-primary hover:text-primary-foreground"
       onClick={handleRetry}
       type="button"
     >
-      Try again
+      <RotateCcw aria-hidden="true" className="size-4" />
+      Retry
     </button>
   );
 }
