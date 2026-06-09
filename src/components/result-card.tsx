@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Download, Maximize2 } from "lucide-react";
+import { useState } from "react";
 import { CopyUrlButton } from "@/components/copy-url-button";
+import { ImageLightbox } from "@/components/image-lightbox";
 import { JobStatusBadge } from "@/components/job-status-badge";
 import { RetryButton } from "@/components/retry-button";
 import { imageDeliveryUrl } from "@/lib/image-url";
@@ -12,24 +14,26 @@ interface ResultCardProps {
 }
 
 export function ResultCard({ job, result }: ResultCardProps) {
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const imageUrl = imageDeliveryUrl(result._id);
+  const imageAlt = `Variant ${result.variantIndex + 1} for: ${job.prompt}`;
 
   return (
     <article className="group overflow-hidden border border-border bg-black/50 transition duration-500 hover:-translate-y-1 hover:border-primary/70">
       {result.imageUrl ? (
-        <Link
-          className="block overflow-hidden border-border border-b bg-black"
-          params={{ jobId: job._id, resultId: result._id }}
-          to="/jobs/$jobId/results/$resultId"
+        <button
+          className="block w-full overflow-hidden border-border border-b bg-black text-left"
+          onClick={() => setIsLightboxOpen(true)}
+          type="button"
         >
           <img
-            alt={`Variant ${result.variantIndex + 1} for: ${job.prompt}`}
+            alt={imageAlt}
             className="aspect-square w-full object-cover transition duration-700 group-hover:scale-105"
             height={1024}
             src={imageUrl}
             width={1024}
           />
-        </Link>
+        </button>
       ) : (
         <div className="grid aspect-square place-items-center border-border border-b bg-[radial-gradient(circle_at_50%_45%,rgba(21,112,239,0.2),transparent_35%),#030303] text-muted-foreground">
           <JobStatusBadge status={result.status} />
@@ -74,6 +78,13 @@ export function ResultCard({ job, result }: ResultCardProps) {
           </p>
         ) : null}
       </div>
+      {isLightboxOpen ? (
+        <ImageLightbox
+          alt={imageAlt}
+          imageUrl={imageUrl}
+          onClose={() => setIsLightboxOpen(false)}
+        />
+      ) : null}
     </article>
   );
 }
