@@ -1,4 +1,6 @@
 import { X } from "lucide-react";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface ImageLightboxProps {
   alt: string;
@@ -7,11 +9,27 @@ interface ImageLightboxProps {
 }
 
 export function ImageLightbox({ alt, imageUrl, onClose }: ImageLightboxProps) {
-  return (
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
+  return createPortal(
     <div
       aria-label="Full screen image viewer"
       aria-modal="true"
-      className="fixed inset-0 z-[100] grid place-items-center bg-black/95 p-4 backdrop-blur-xl"
+      className="fixed inset-0 z-[9999] grid place-items-center bg-black/95 p-4 backdrop-blur-xl"
       role="dialog"
     >
       <button
@@ -36,6 +54,7 @@ export function ImageLightbox({ alt, imageUrl, onClose }: ImageLightboxProps) {
         src={imageUrl}
         width={1536}
       />
-    </div>
+    </div>,
+    document.body
   );
 }
