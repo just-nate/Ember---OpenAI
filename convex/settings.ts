@@ -39,21 +39,10 @@ export const health = query({
         required: true,
       },
       {
-        description: "Trigger.dev project reference is configured.",
-        name: "Trigger project",
-        ok: hasEnv("TRIGGER_PROJECT_REF"),
-        required: true,
-      },
-      {
-        description: "Trigger.dev secret key is configured for worker runs.",
-        name: "Trigger secret",
+        description:
+          "Convex can enqueue Trigger.dev runs with the Trigger API secret.",
+        name: "Trigger enqueue secret",
         ok: hasEnv("TRIGGER_SECRET_KEY"),
-        required: true,
-      },
-      {
-        description: "OpenAI key is configured for GPT Image 2 generation.",
-        name: "OpenAI provider",
-        ok: hasEnv("OPENAI_API_KEY"),
         required: true,
       },
       {
