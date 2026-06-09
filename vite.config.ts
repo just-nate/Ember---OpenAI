@@ -6,6 +6,11 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [tanstackRouter(), react(), tailwindcss()],
+  server: {
+    watch: {
+      ignored: ["**/.trigger/**", "**/convex/_generated/**"],
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),

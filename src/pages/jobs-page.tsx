@@ -21,7 +21,7 @@ function formatCreatedAt(timestamp: number) {
 }
 
 export function JobsPage() {
-  const jobs = useQuery(api.jobs.list, { limit: 50 });
+  const jobs = useQuery(api.jobs.listWithPreview, { limit: 50 });
   const [search, setSearch] = useState("");
   const filteredJobs = useMemo(() => {
     if (!jobs) {
@@ -100,9 +100,19 @@ export function JobsPage() {
             to="/jobs/$jobId"
           >
             <div className="relative grid h-44 place-items-center overflow-hidden border-border border-b bg-black">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(21,112,239,0.28),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent)] opacity-80 transition duration-700 group-hover:scale-105" />
+              {job.previewImageUrl ? (
+                <img
+                  alt={`Preview for: ${job.prompt}`}
+                  className="h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
+                  height={320}
+                  src={job.previewImageUrl}
+                  width={480}
+                />
+              ) : (
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_35%,rgba(21,112,239,0.28),transparent_35%),linear-gradient(135deg,rgba(255,255,255,0.06),transparent)] opacity-80 transition duration-700 group-hover:scale-105" />
+              )}
               {job.status === "running" || job.status === "retrying" ? (
-                <div className="relative z-10 grid place-items-center text-center">
+                <div className="relative z-10 grid place-items-center bg-black/60 p-4 text-center backdrop-blur-sm">
                   <LoaderCircle
                     aria-hidden="true"
                     className="size-9 animate-spin text-muted-foreground"
@@ -117,12 +127,18 @@ export function JobsPage() {
                     Processing {job.progress}%
                   </p>
                 </div>
-              ) : (
+              ) : null}
+              {job.previewImageUrl ? null : (
                 <div className="relative z-10 h-20 w-20 border border-primary/60 bg-primary/10 shadow-[0_0_70px_rgba(21,112,239,0.4)] transition duration-700 group-hover:rotate-45" />
               )}
               <div className="absolute top-3 right-3 z-20">
                 <JobStatusBadge status={job.status} />
               </div>
+              {job.count > 1 ? (
+                <div className="absolute bottom-3 left-3 z-20 rounded-full border border-border bg-black/70 px-3 py-1 font-black text-xs uppercase tracking-[0.12em] backdrop-blur-sm">
+                  {job.completedResults}/{job.count} images
+                </div>
+              ) : null}
             </div>
             <div className="flex flex-1 flex-col p-5">
               <p className="line-clamp-3 min-h-18 text-lg text-muted-foreground leading-7 group-hover:text-foreground">

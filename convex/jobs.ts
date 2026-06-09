@@ -40,6 +40,27 @@ const triggerResultValidator = v.object({
   variantIndex: v.number(),
 });
 
+const jobWithPreviewValidator = v.object({
+  _creationTime: v.number(),
+  _id: v.id("jobs"),
+  completedResults: v.number(),
+  count: v.number(),
+  createdAt: v.number(),
+  failedResults: v.number(),
+  failureReason: v.optional(v.string()),
+  firstResultStatus: v.optional(jobStatusValidator),
+  format: imageFormatValidator,
+  previewImageUrl: v.optional(v.string()),
+  prompt: v.string(),
+  progress: v.number(),
+  quality: imageQualityValidator,
+  retryOfJobId: v.optional(v.id("jobs")),
+  size: v.string(),
+  status: jobStatusValidator,
+  triggerRunId: v.optional(v.string()),
+  updatedAt: v.number(),
+});
+
 const triggerJobPayloadValidator = v.object({
   count: v.number(),
   format: imageFormatValidator,
@@ -142,6 +163,37 @@ export const list = query({
       .withIndex("by_created_at")
       .order("desc")
       .take(limit);
+  },
+});
+
+export const listWithPreview = query({
+  args: { limit: v.optional(v.number()) },
+  returns: v.array(jobWithPreviewValidator),
+  handler: async (ctx, args) => {
+    const limit = Math.min(args.limit ?? 25, 100);
+    const jobs = await ctx.db
+      .query("jobs")
+      .withIndex("by_created_at")
+      .order("desc")
+      .take(limit);
+
+    return await Promise.all(
+      jobs.map(async (job) => {
+        const results = await ctx.db
+          .query("imageResults")
+          .withIndex("by_job", (q) => q.eq("jobId", job._id))
+          .order("asc")
+          .take(100);
+        const firstCompleted = results.find((result) => result.imageUrl);
+        const firstResult = results[0];
+
+        return {
+          ...job,
+          firstResultStatus: firstResult?.status,
+          previewImageUrl: firstCompleted?.imageUrl,
+        };
+      })
+    );
   },
 });
 

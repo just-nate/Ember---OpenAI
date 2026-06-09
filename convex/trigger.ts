@@ -43,7 +43,8 @@ export const enqueueImageResult = internalAction({
       resultId: args.resultId,
     });
     if (!result) {
-      throw new ConvexError("Image result not found for Trigger enqueue.");
+      // Duplicate retry schedules can arrive after the result already moved out of queued.
+      return null;
     }
 
     const handle = await tasks.trigger("generate-image-output", result, {

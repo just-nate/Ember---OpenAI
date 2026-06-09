@@ -131,7 +131,7 @@ export const getForTrigger = internalQuery({
   ),
   handler: async (ctx, args) => {
     const result = await ctx.db.get(args.resultId);
-    if (!result) {
+    if (result?.status !== "queued") {
       return null;
     }
     const job = await ctx.db.get(result.jobId);
