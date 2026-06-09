@@ -1,12 +1,17 @@
 import { z } from "zod";
 
 const MAX_PROMPT_LENGTH = 4000;
-const MAX_EDGE_PIXELS = 2048;
-const MAX_TOTAL_PIXELS = 4_194_304;
+const MIN_TOTAL_PIXELS = 655_360;
+const MAX_EDGE_PIXELS = 3840;
+const MAX_TOTAL_PIXELS = 8_294_400;
 const MAX_ASPECT_RATIO = 3;
 
 export const imageQualitySchema = z.enum(["low", "medium", "high", "auto"]);
 export const imageFormatSchema = z.enum(["png", "jpeg", "webp"]);
+export const imageSizeSchema = z.union([
+  z.literal("auto"),
+  z.string().regex(/^\d+x\d+$/u),
+]);
 
 export const imageOutputPayloadSchema = z.object({
   format: imageFormatSchema,
@@ -14,7 +19,7 @@ export const imageOutputPayloadSchema = z.object({
   prompt: z.string().trim().min(3).max(MAX_PROMPT_LENGTH),
   quality: imageQualitySchema,
   resultId: z.string().min(1),
-  size: z.string().regex(/^\d+x\d+$/u),
+  size: imageSizeSchema,
   variantIndex: z.number().int().min(0),
 });
 
@@ -30,13 +35,17 @@ export const imageJobPayloadSchema = z.object({
       variantIndex: z.number().int().min(0),
     })
   ),
-  size: z.string().regex(/^\d+x\d+$/u),
+  size: imageSizeSchema,
 });
 
 export type ImageJobPayload = z.infer<typeof imageJobPayloadSchema>;
 export type ImageOutputPayload = z.infer<typeof imageOutputPayloadSchema>;
 
 export function validateImageSize(size: string) {
+  if (size === "auto") {
+    return { height: 0, size, width: 0 };
+  }
+
   const [widthText, heightText] = size.split("x");
   const width = Number(widthText);
   const height = Number(heightText);
@@ -48,12 +57,13 @@ export function validateImageSize(size: string) {
     throw new Error("Image dimensions must be multiples of 16.");
   }
   if (Math.max(width, height) > MAX_EDGE_PIXELS) {
-    throw new Error("Image edge is larger than the GPT Image 2 starter limit.");
+    throw new Error("Image edge must not exceed 3840px.");
+  }
+  if (width * height < MIN_TOTAL_PIXELS) {
+    throw new Error("Image has too few pixels for GPT Image 2.");
   }
   if (width * height > MAX_TOTAL_PIXELS) {
-    throw new Error(
-      "Image has too many pixels for the GPT Image 2 starter limit."
-    );
+    throw new Error("Image has too many pixels for GPT Image 2.");
   }
   if (Math.max(width, height) / Math.min(width, height) > MAX_ASPECT_RATIO) {
     throw new Error("Image aspect ratio must not be wider than 3:1.");

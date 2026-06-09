@@ -14,7 +14,10 @@ import {
 
 const MAX_PROMPT_LENGTH = 4000;
 const MAX_IMAGE_COUNT = 4;
-const ALLOWED_SIZES = new Set(["1024x1024", "1024x1536", "1536x1024"]);
+const MIN_TOTAL_PIXELS = 655_360;
+const MAX_EDGE_PIXELS = 3840;
+const MAX_TOTAL_PIXELS = 8_294_400;
+const MAX_ASPECT_RATIO = 3;
 
 const jobValidator = v.object({
   _creationTime: v.number(),
@@ -92,8 +95,31 @@ function validateCount(count: number) {
 }
 
 function validateSize(size: string) {
-  if (!ALLOWED_SIZES.has(size)) {
-    throw new ConvexError("Unsupported image size.");
+  if (size === "auto") {
+    return;
+  }
+
+  const [widthText, heightText] = size.split("x");
+  const width = Number(widthText);
+  const height = Number(heightText);
+
+  if (!(Number.isInteger(width) && Number.isInteger(height))) {
+    throw new ConvexError("Image size must use integer dimensions.");
+  }
+  if (width % 16 !== 0 || height % 16 !== 0) {
+    throw new ConvexError("Image dimensions must be multiples of 16.");
+  }
+  if (Math.max(width, height) > MAX_EDGE_PIXELS) {
+    throw new ConvexError("Image edge must not exceed 3840px.");
+  }
+  if (width * height < MIN_TOTAL_PIXELS) {
+    throw new ConvexError("Image has too few pixels for GPT Image 2.");
+  }
+  if (width * height > MAX_TOTAL_PIXELS) {
+    throw new ConvexError("Image has too many pixels for GPT Image 2.");
+  }
+  if (Math.max(width, height) / Math.min(width, height) > MAX_ASPECT_RATIO) {
+    throw new ConvexError("Image aspect ratio must not be wider than 3:1.");
   }
 }
 

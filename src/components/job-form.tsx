@@ -3,7 +3,18 @@ import { ImagePlus, SlidersHorizontal, Sparkles } from "lucide-react";
 import { type ComponentProps, useState } from "react";
 import { api } from "../../convex/_generated/api";
 
-const sizes = ["1024x1024", "1024x1536", "1536x1024"] as const;
+const sizes = [
+  "auto",
+  "1024x1024",
+  "1024x1536",
+  "1536x1024",
+  "2048x2048",
+  "2048x1152",
+  "2560x1440",
+  "1440x2560",
+  "3840x2160",
+  "2160x3840",
+] as const;
 const qualities = ["auto", "low", "medium", "high"] as const;
 const formats = ["png", "jpeg", "webp"] as const;
 type FormSubmitEvent = Parameters<

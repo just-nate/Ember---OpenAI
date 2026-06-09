@@ -128,6 +128,8 @@ Trigger loads tasks from `./trigger` via `trigger.config.ts`. The dev and deploy
 
 Set `OPENAI_API_KEY` in the worker environment. The v1 adapter uses `gpt-image-2`, sends `n = 1` per child task, validates prompt/quality/size, and treats moderation or invalid-input errors as non-retryable.
 
+Ember includes common GPT Image 2 presets: `auto`, `1024x1024`, `1024x1536`, `1536x1024`, `2048x2048`, `2048x1152`, `2560x1440`, `1440x2560`, `3840x2160`, and `2160x3840`. Backend validation also follows GPT Image 2 constraints: dimensions must be multiples of 16, max edge must not exceed 3840px, aspect ratio must not exceed 3:1, and total pixels must stay between 655,360 and 8,294,400.
+
 ## Cloudflare R2 setup
 
 Create an R2 bucket and credentials, then set the R2 values in Convex env. Convex owns storage writes through `@convex-dev/r2`; Trigger sends generated image data to the protected Convex HTTP action.

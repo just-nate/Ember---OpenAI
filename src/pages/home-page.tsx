@@ -3,10 +3,11 @@ import { useQuery } from "convex/react";
 import { ArrowUpRight, ImageIcon } from "lucide-react";
 import { JobForm } from "@/components/job-form";
 import { JobStatusBadge } from "@/components/job-status-badge";
+import { imageDeliveryUrl } from "@/lib/image-url";
 import { api } from "../../convex/_generated/api";
 
 export function HomePage() {
-  const jobs = useQuery(api.jobs.list, { limit: 25 });
+  const jobs = useQuery(api.jobs.listWithPreview, { limit: 12 });
 
   return (
     <main className="grid min-h-svh grid-cols-1 lg:grid-cols-[1fr_27rem]">
@@ -57,25 +58,43 @@ export function HomePage() {
               key={job._id}
             >
               <Link
-                className="block p-4"
+                className="grid grid-cols-[5.5rem_1fr] gap-3 p-3"
                 params={{ jobId: job._id }}
                 to="/jobs/$jobId"
               >
-                <div className="flex items-start justify-between gap-4">
-                  <p className="line-clamp-2 font-semibold text-muted-foreground text-sm leading-6 group-hover:text-foreground">
-                    {job.prompt}
-                  </p>
-                  <ArrowUpRight
-                    aria-hidden="true"
-                    className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
-                  />
+                <div className="grid aspect-square place-items-center overflow-hidden border border-border bg-black">
+                  {job.previewResultId ? (
+                    <img
+                      alt={`Preview for: ${job.prompt}`}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      height={160}
+                      src={imageDeliveryUrl(job.previewResultId)}
+                      width={160}
+                    />
+                  ) : (
+                    <ImageIcon
+                      aria-hidden="true"
+                      className="size-6 text-muted-foreground"
+                    />
+                  )}
                 </div>
-                <div className="mt-4 flex items-center justify-between gap-3">
-                  <span className="font-black text-muted-foreground text-xs uppercase tracking-[0.12em]">
-                    {job.progress}% · {job.count} output
-                    {job.count === 1 ? "" : "s"}
-                  </span>
-                  <JobStatusBadge status={job.status} />
+                <div className="min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="line-clamp-2 font-semibold text-muted-foreground text-sm leading-6 group-hover:text-foreground">
+                      {job.prompt}
+                    </p>
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+                    />
+                  </div>
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                    <span className="font-black text-[0.68rem] text-muted-foreground uppercase tracking-[0.12em]">
+                      {job.progress}% · {job.count} output
+                      {job.count === 1 ? "" : "s"}
+                    </span>
+                    <JobStatusBadge status={job.status} />
+                  </div>
                 </div>
               </Link>
             </li>
