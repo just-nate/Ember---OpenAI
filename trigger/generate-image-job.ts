@@ -11,13 +11,49 @@ import {
   imageJobPayloadSchema,
 } from "./lib/image-options";
 
+const variationDirections = [
+  "Use a balanced flagship composition with clear subject framing and polished production quality.",
+  "Use a closer, more intimate crop with a distinct camera angle and stronger subject presence.",
+  "Use a wider environmental composition with more context, depth, and background storytelling.",
+  "Use more dramatic lighting, mood, contrast, and visual tension while preserving the core subject.",
+] as const;
+
+function variationPrompt({
+  basePrompt,
+  count,
+  variantIndex,
+}: {
+  basePrompt: string;
+  count: number;
+  variantIndex: number;
+}) {
+  if (count === 1) {
+    return basePrompt;
+  }
+
+  const direction =
+    variationDirections[variantIndex % variationDirections.length];
+
+  return `Create variation ${variantIndex + 1} of ${count}.
+Keep the same core request, subject, and intent, but make this output visually distinct from the other variants.
+${direction}
+Avoid repeating the exact same framing, pose, lighting, and background treatment as another variant.
+
+Core prompt:
+${basePrompt}`;
+}
+
 function childPayloads(
   payload: ReturnType<typeof imageJobPayloadSchema.parse>
 ): ImageOutputPayload[] {
   return payload.results.map((result) => ({
     format: payload.format,
     jobId: payload.jobId,
-    prompt: payload.prompt,
+    prompt: variationPrompt({
+      basePrompt: payload.prompt,
+      count: payload.count,
+      variantIndex: result.variantIndex,
+    }),
     quality: payload.quality,
     resultId: result._id,
     size: payload.size,
