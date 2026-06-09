@@ -23,7 +23,13 @@
     "fix": "ultracite fix",
     "preview": "vite preview",
     "convex:dev": "convex dev",
-    "trigger:dev": "trigger dev"
+    "trigger:login": "trigger login",
+    "trigger:whoami": "trigger whoami --env-file .env.local",
+    "trigger:env:list": "set -a && . ./.env.local && set +a && trigger env list --project-ref \"$TRIGGER_PROJECT_REF\"",
+    "trigger:env:pull": "set -a && . ./.env.local && set +a && trigger env pull --project-ref \"$TRIGGER_PROJECT_REF\" --output .env.trigger.local",
+    "trigger:dev": "trigger dev --config trigger.config.ts --env-file .env.local",
+    "trigger:deploy:dry": "trigger deploy --config trigger.config.ts --env-file .env.local --dry-run",
+    "trigger:deploy": "trigger deploy --config trigger.config.ts --env-file .env.local"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

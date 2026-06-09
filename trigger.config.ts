@@ -1,7 +1,17 @@
 import { defineConfig } from "@trigger.dev/sdk";
 
+function requiredEnv(name: string) {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `${name} is required. Add it to .env.local or your Trigger.dev environment.`
+    );
+  }
+  return value;
+}
+
 export default defineConfig({
-  project: process.env.TRIGGER_PROJECT_REF ?? "ember-local",
+  project: requiredEnv("TRIGGER_PROJECT_REF"),
   dirs: ["./trigger"],
   runtime: "node",
   retries: {

@@ -110,13 +110,19 @@ bunx convex env set R2_PUBLIC_BASE_URL <value>
 
 ## Trigger.dev setup
 
-Set `TRIGGER_SECRET_KEY` and `TRIGGER_PROJECT_REF`, then run:
+Set `TRIGGER_PROJECT_REF` in `.env.local`. Set `TRIGGER_SECRET_KEY` anywhere Convex enqueues Trigger runs. Set `OPENAI_API_KEY`, `CONVEX_SITE_URL`, and `CONVEX_WORKER_SECRET` in the Trigger.dev runtime environment because worker tasks call OpenAI and post callbacks to Convex.
+
+Use the standard Trigger scripts:
 
 ```bash
+bun run trigger:login
+bun run trigger:whoami
 bun run trigger:dev
+bun run trigger:deploy:dry
+bun run trigger:deploy
 ```
 
-Trigger loads tasks from `./trigger` via `trigger.config.ts`.
+Trigger loads tasks from `./trigger` via `trigger.config.ts`. The dev and deploy scripts load `.env.local` with `--env-file .env.local` so the project ref is consistent.
 
 ## OpenAI setup
 
