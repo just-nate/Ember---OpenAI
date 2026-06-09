@@ -37,43 +37,14 @@ export function JobDetailPage({ jobId }: { jobId: Id<"jobs"> }) {
         <ArrowLeft aria-hidden="true" className="size-4" />
         Back to history
       </Link>
-      <div className="mt-7 grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
-        <section className="ember-panel rounded-sm p-6 md:p-7">
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <p className="ember-kicker">Job detail</p>
-              <h1 className="mt-3 font-black text-4xl tracking-[-0.07em] md:text-5xl">
-                Generation Run
-              </h1>
-            </div>
-            <JobStatusBadge status={job.status} />
-          </div>
-          <p className="mt-6 border-border border-y py-5 text-lg text-muted-foreground leading-8">
-            {job.prompt}
-          </p>
-          <div className="mt-6">
-            <ProgressSteps job={job} />
-          </div>
-          {job.status === "failed" ? (
-            <div className="mt-6">
-              <RetryButton jobId={job._id} kind="job" />
-            </div>
-          ) : null}
-          <h2 className="mt-10 font-black text-2xl tracking-[-0.05em]">
-            Activity
-          </h2>
-          <ActivityTimeline
-            activities={activities}
-            isLoading={activities === undefined}
-          />
-        </section>
+      <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(0,7fr)_minmax(20rem,3fr)]">
         <section className="ember-panel rounded-sm p-6 md:p-7">
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="ember-kicker">Outputs</p>
-              <h2 className="mt-3 font-black text-4xl tracking-[-0.07em]">
+              <h1 className="mt-3 font-black text-4xl tracking-[-0.07em] md:text-5xl">
                 Gallery
-              </h2>
+              </h1>
             </div>
             <p className="font-black text-muted-foreground text-xs uppercase tracking-[0.16em]">
               {job.completedResults}/{job.count} ready
@@ -81,6 +52,39 @@ export function JobDetailPage({ jobId }: { jobId: Id<"jobs"> }) {
           </div>
           <ResultGallery job={job} results={results} />
         </section>
+
+        <aside className="space-y-5 xl:sticky xl:top-8 xl:self-start">
+          <section className="ember-panel rounded-sm p-6 md:p-7">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="ember-kicker">Job detail</p>
+                <h2 className="mt-3 font-black text-4xl tracking-[-0.07em]">
+                  Generation Run
+                </h2>
+              </div>
+              <JobStatusBadge status={job.status} />
+            </div>
+            <p className="mt-6 border-border border-y py-5 text-muted-foreground leading-7">
+              {job.prompt}
+            </p>
+            <div className="mt-6">
+              <ProgressSteps job={job} />
+            </div>
+            {job.status === "failed" ? (
+              <div className="mt-6">
+                <RetryButton jobId={job._id} kind="job" />
+              </div>
+            ) : null}
+          </section>
+
+          <section className="ember-panel rounded-sm p-6 md:p-7">
+            <h2 className="font-black text-2xl tracking-[-0.05em]">Activity</h2>
+            <ActivityTimeline
+              activities={activities}
+              isLoading={activities === undefined}
+            />
+          </section>
+        </aside>
       </div>
     </main>
   );

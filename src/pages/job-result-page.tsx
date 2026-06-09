@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { ArrowLeft, Download, Images } from "lucide-react";
+import { ArrowLeft, Download, Images, X } from "lucide-react";
+import { useState } from "react";
 import { CopyUrlButton } from "@/components/copy-url-button";
 import { JobStatusBadge } from "@/components/job-status-badge";
 import { RetryButton } from "@/components/retry-button";
+import { imageDeliveryUrl } from "@/lib/image-url";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 
@@ -14,6 +16,7 @@ export function JobResultPage({
   jobId: Id<"jobs">;
   resultId: Id<"imageResults">;
 }) {
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const job = useQuery(api.jobs.get, { jobId });
   const result = useQuery(api.imageResults.get, { resultId });
   const siblingResults = useQuery(api.imageResults.listByJob, { jobId });
@@ -32,6 +35,8 @@ export function JobResultPage({
     );
   }
 
+  const stableImageUrl = imageDeliveryUrl(result._id);
+
   return (
     <main className="min-h-svh px-5 py-8 md:px-10 lg:px-12">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -46,23 +51,22 @@ export function JobResultPage({
         <JobStatusBadge status={result.status} />
       </div>
 
-      <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="mt-7 grid gap-6 xl:grid-cols-[minmax(0,7fr)_minmax(20rem,3fr)]">
         <section className="ember-panel overflow-hidden rounded-sm">
           {result.imageUrl ? (
-            <a
-              className="group block bg-black"
-              href={result.imageUrl}
-              rel="noreferrer"
-              target="_blank"
+            <button
+              className="group block w-full bg-black"
+              onClick={() => setIsLightboxOpen(true)}
+              type="button"
             >
               <img
                 alt={`Variant ${result.variantIndex + 1} for: ${job.prompt}`}
                 className="max-h-[calc(100svh-10rem)] w-full object-contain transition duration-700 group-hover:scale-[1.01]"
                 height={1536}
-                src={result.imageUrl}
+                src={stableImageUrl}
                 width={1536}
               />
-            </a>
+            </button>
           ) : (
             <div className="grid min-h-[32rem] place-items-center bg-[radial-gradient(circle_at_50%_45%,rgba(21,112,239,0.22),transparent_35%),#030303] p-8 text-center">
               <div>
@@ -114,12 +118,12 @@ export function JobResultPage({
                   <a
                     className="inline-flex items-center gap-2 rounded-sm border border-border px-3 py-2 font-bold text-sm transition hover:border-primary hover:text-primary"
                     download
-                    href={result.imageUrl}
+                    href={stableImageUrl}
                   >
                     <Download aria-hidden="true" className="size-4" />
                     Download
                   </a>
-                  <CopyUrlButton imageUrl={result.imageUrl} />
+                  <CopyUrlButton imageUrl={stableImageUrl} />
                 </>
               ) : null}
               {result.status === "failed" ? (
@@ -153,7 +157,7 @@ export function JobResultPage({
                       alt={`Variant ${sibling.variantIndex + 1}`}
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                       height={256}
-                      src={sibling.imageUrl}
+                      src={imageDeliveryUrl(sibling._id)}
                       width={256}
                     />
                   ) : (
@@ -167,6 +171,38 @@ export function JobResultPage({
           </section>
         </aside>
       </div>
+
+      {isLightboxOpen && result.imageUrl ? (
+        <div
+          aria-label={`Variant ${result.variantIndex + 1} lightbox`}
+          aria-modal="true"
+          className="fixed inset-0 z-50 grid place-items-center bg-black/90 p-4 backdrop-blur-xl"
+          role="dialog"
+        >
+          <button
+            className="absolute top-5 right-5 grid size-11 place-items-center rounded-full border border-border bg-black/70 text-foreground transition hover:border-primary hover:text-primary"
+            onClick={() => setIsLightboxOpen(false)}
+            type="button"
+          >
+            <span className="sr-only">Close image viewer</span>
+            <X aria-hidden="true" className="size-5" />
+          </button>
+          <button
+            className="absolute inset-0 -z-10"
+            onClick={() => setIsLightboxOpen(false)}
+            type="button"
+          >
+            <span className="sr-only">Close image viewer backdrop</span>
+          </button>
+          <img
+            alt={`Variant ${result.variantIndex + 1} for: ${job.prompt}`}
+            className="max-h-[92svh] max-w-[94vw] object-contain shadow-[0_40px_160px_rgba(0,0,0,0.75)]"
+            height={1536}
+            src={stableImageUrl}
+            width={1536}
+          />
+        </div>
+      ) : null}
     </main>
   );
 }

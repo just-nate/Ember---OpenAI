@@ -3,6 +3,7 @@ import { Download, Maximize2 } from "lucide-react";
 import { CopyUrlButton } from "@/components/copy-url-button";
 import { JobStatusBadge } from "@/components/job-status-badge";
 import { RetryButton } from "@/components/retry-button";
+import { imageDeliveryUrl } from "@/lib/image-url";
 import type { Doc } from "../../convex/_generated/dataModel";
 
 interface ResultCardProps {
@@ -11,6 +12,8 @@ interface ResultCardProps {
 }
 
 export function ResultCard({ job, result }: ResultCardProps) {
+  const imageUrl = imageDeliveryUrl(result._id);
+
   return (
     <article className="group overflow-hidden border border-border bg-black/50 transition duration-500 hover:-translate-y-1 hover:border-primary/70">
       {result.imageUrl ? (
@@ -23,7 +26,7 @@ export function ResultCard({ job, result }: ResultCardProps) {
             alt={`Variant ${result.variantIndex + 1} for: ${job.prompt}`}
             className="aspect-square w-full object-cover transition duration-700 group-hover:scale-105"
             height={1024}
-            src={result.imageUrl}
+            src={imageUrl}
             width={1024}
           />
         </Link>
@@ -53,12 +56,12 @@ export function ResultCard({ job, result }: ResultCardProps) {
               <a
                 className="inline-flex items-center gap-2 rounded-sm border border-border px-3 py-2 font-bold text-sm transition hover:border-primary hover:text-primary"
                 download
-                href={result.imageUrl}
+                href={imageUrl}
               >
                 <Download aria-hidden="true" className="size-4" />
                 Download
               </a>
-              <CopyUrlButton imageUrl={result.imageUrl} />
+              <CopyUrlButton imageUrl={imageUrl} />
             </>
           ) : null}
           {result.status === "failed" ? (

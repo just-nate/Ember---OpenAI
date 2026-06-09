@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { JobStatusBadge } from "@/components/job-status-badge";
+import { imageDeliveryUrl } from "@/lib/image-url";
 import { api } from "../../convex/_generated/api";
 
 function formatCreatedAt(timestamp: number) {
@@ -100,12 +101,12 @@ export function JobsPage() {
             to="/jobs/$jobId"
           >
             <div className="relative grid h-44 place-items-center overflow-hidden border-border border-b bg-black">
-              {job.previewImageUrl ? (
+              {job.previewResultId ? (
                 <img
                   alt={`Preview for: ${job.prompt}`}
                   className="h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-105 group-hover:opacity-100"
                   height={320}
-                  src={job.previewImageUrl}
+                  src={imageDeliveryUrl(job.previewResultId)}
                   width={480}
                 />
               ) : (
@@ -128,7 +129,7 @@ export function JobsPage() {
                   </p>
                 </div>
               ) : null}
-              {job.previewImageUrl ? null : (
+              {job.previewResultId ? null : (
                 <div className="relative z-10 h-20 w-20 border border-primary/60 bg-primary/10 shadow-[0_0_70px_rgba(21,112,239,0.4)] transition duration-700 group-hover:rotate-45" />
               )}
               <div className="absolute top-3 right-3 z-20">

@@ -51,6 +51,7 @@ const jobWithPreviewValidator = v.object({
   firstResultStatus: v.optional(jobStatusValidator),
   format: imageFormatValidator,
   previewImageUrl: v.optional(v.string()),
+  previewResultId: v.optional(v.id("imageResults")),
   prompt: v.string(),
   progress: v.number(),
   quality: imageQualityValidator,
@@ -191,6 +192,7 @@ export const listWithPreview = query({
           ...job,
           firstResultStatus: firstResult?.status,
           previewImageUrl: firstCompleted?.imageUrl,
+          previewResultId: firstCompleted?._id,
         };
       })
     );

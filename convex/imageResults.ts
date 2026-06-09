@@ -92,6 +92,30 @@ export const retry = mutation({
   },
 });
 
+export const getImageDelivery = internalQuery({
+  args: { resultId: v.id("imageResults") },
+  returns: v.union(
+    v.object({
+      mimeType: v.optional(v.string()),
+      r2Key: v.optional(v.string()),
+      status: imageResultStatusValidator,
+    }),
+    v.null()
+  ),
+  handler: async (ctx, args) => {
+    const result = await ctx.db.get(args.resultId);
+    if (!result) {
+      return null;
+    }
+
+    return {
+      mimeType: result.mimeType,
+      r2Key: result.r2Key,
+      status: result.status,
+    };
+  },
+});
+
 export const getCompletionState = internalQuery({
   args: { resultId: v.id("imageResults") },
   returns: v.union(

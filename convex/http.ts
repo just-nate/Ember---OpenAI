@@ -145,6 +145,10 @@ function badRequest(message: string) {
   return Response.json({ error: message, ok: false }, { status: 400 });
 }
 
+function notFound(message: string) {
+  return Response.json({ error: message, ok: false }, { status: 404 });
+}
+
 async function requirePayload(request: Request) {
   const auth = authenticateWorker(request);
   if (!auth.ok) {
@@ -192,6 +196,37 @@ http.route({
   path: "/worker/health",
   method: "GET",
   handler: httpAction(async () => Response.json({ ok: true })),
+});
+
+http.route({
+  pathPrefix: "/images/",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    const url = new URL(request.url);
+    const resultId = url.pathname.replace("/images/", "") as Id<"imageResults">;
+    if (!resultId) {
+      return notFound("Image result not found.");
+    }
+
+    const result = await ctx.runQuery(internal.imageResults.getImageDelivery, {
+      resultId,
+    });
+    if (!result?.r2Key) {
+      return notFound("Image is not ready.");
+    }
+
+    const signedUrl = await ctx.runAction(internal.storage.getSignedImageUrl, {
+      r2Key: result.r2Key,
+    });
+
+    return new Response(null, {
+      headers: {
+        "Cache-Control": "no-store",
+        Location: signedUrl,
+      },
+      status: 302,
+    });
+  }),
 });
 
 http.route({
