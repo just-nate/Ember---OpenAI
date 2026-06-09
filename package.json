@@ -24,12 +24,12 @@
     "preview": "vite preview",
     "convex:dev": "convex dev",
     "trigger:login": "trigger login",
-    "trigger:whoami": "trigger whoami --env-file .env.local",
-    "trigger:env:list": "set -a && . ./.env.local && set +a && trigger env list --project-ref \"$TRIGGER_PROJECT_REF\"",
-    "trigger:env:pull": "set -a && . ./.env.local && set +a && trigger env pull --project-ref \"$TRIGGER_PROJECT_REF\" --output .env.trigger.local",
-    "trigger:dev": "trigger dev --config trigger.config.ts --env-file .env.local",
-    "trigger:deploy:dry": "trigger deploy --config trigger.config.ts --env-file .env.local --dry-run",
-    "trigger:deploy": "trigger deploy --config trigger.config.ts --env-file .env.local"
+    "trigger:whoami": "node scripts/with-env-local.mjs trigger whoami --config trigger.config.ts --env-file .env.local",
+    "trigger:env:list": "node scripts/with-env-local.mjs trigger env list --config trigger.config.ts",
+    "trigger:env:pull": "node scripts/with-env-local.mjs trigger env pull --config trigger.config.ts --output .env.trigger.local",
+    "trigger:dev": "node scripts/with-env-local.mjs trigger dev --config trigger.config.ts --env-file .env.local",
+    "trigger:deploy:dry": "node scripts/with-env-local.mjs trigger deploy --config trigger.config.ts --env-file .env.local --dry-run",
+    "trigger:deploy": "node scripts/with-env-local.mjs trigger deploy --config trigger.config.ts --env-file .env.local"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
