@@ -10,8 +10,8 @@ export function SettingsPage() {
   ).length;
 
   return (
-    <main className="min-h-svh px-5 py-8 md:px-10 lg:px-12">
-      <div className="grid gap-6 xl:grid-cols-[1fr_24rem]">
+    <main className="min-h-svh overflow-y-auto px-5 py-8 md:px-10 lg:h-svh lg:px-12">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <section>
           <h1 className="max-w-4xl font-black text-5xl tracking-[-0.08em] md:text-6xl">
             Environment Readiness
@@ -23,7 +23,7 @@ export function SettingsPage() {
           <SetupHealth checks={health?.checks} />
         </section>
 
-        <aside className="space-y-5 xl:pt-36">
+        <aside className="space-y-5 xl:sticky xl:top-8 xl:self-start xl:pt-36">
           <section className="ember-panel rounded-sm p-7 text-center">
             <div className="mx-auto grid size-20 place-items-center rounded-sm border border-amber-400/40 bg-amber-400/10 text-amber-300">
               {health?.ok ? (

@@ -5,14 +5,8 @@ import { JobForm } from "@/components/job-form";
 import { JobStatusBadge } from "@/components/job-status-badge";
 import { api } from "../../convex/_generated/api";
 
-const previewImages = [
-  "https://picsum.photos/seed/ember-black-mountain/600/420",
-  "https://picsum.photos/seed/ember-control-panel/600/420",
-  "https://picsum.photos/seed/ember-terminal-room/900/520",
-];
-
 export function HomePage() {
-  const jobs = useQuery(api.jobs.list, { limit: 5 });
+  const jobs = useQuery(api.jobs.list, { limit: 25 });
 
   return (
     <main className="grid min-h-svh grid-cols-1 lg:grid-cols-[1fr_27rem]">
@@ -31,7 +25,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <aside className="border-border border-t bg-card/60 p-5 backdrop-blur-xl lg:min-h-svh lg:border-t-0 lg:border-l lg:p-7">
+      <aside className="flex flex-col border-border border-t bg-card/60 p-5 backdrop-blur-xl lg:h-svh lg:border-t-0 lg:border-l lg:p-7">
         <div className="flex items-center justify-between gap-4">
           <h2 className="font-black text-3xl tracking-[-0.06em]">Recent</h2>
           <Link
@@ -40,23 +34,6 @@ export function HomePage() {
           >
             View all
           </Link>
-        </div>
-
-        <div className="mt-7 grid grid-flow-dense grid-cols-2 gap-3">
-          {previewImages.map((src, index) => (
-            <div
-              className={`group overflow-hidden border border-border bg-black ${index === 2 ? "col-span-2 aspect-[1.65]" : "aspect-square"}`}
-              key={src}
-            >
-              <img
-                alt="Dark generated artwork preview"
-                className="h-full w-full object-cover opacity-75 grayscale transition duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0"
-                height={420}
-                src={src}
-                width={600}
-              />
-            </div>
-          ))}
         </div>
 
         {jobs === undefined ? (
@@ -73,7 +50,7 @@ export function HomePage() {
             </div>
           </div>
         ) : null}
-        <ol className="mt-7 grid gap-3">
+        <ol className="mt-7 grid gap-3 overflow-y-auto pr-1 lg:min-h-0 lg:flex-1">
           {jobs?.map((job) => (
             <li
               className="group border border-border bg-black/40 transition duration-300 hover:border-primary/70"
