@@ -1,4 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { JobsPage } from "@/pages/jobs-page";
+/* eslint-disable react-refresh/only-export-components */
 
-export const Route = createFileRoute("/jobs")({ component: JobsPage });
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+
+export const Route = createFileRoute("/jobs")({ component: JobsLayout });
+
+function JobsLayout() {
+  return <Outlet />;
+}
