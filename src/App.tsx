@@ -1,21 +1,20 @@
-import { Button } from "@/components/ui/button"
-
+// biome-ignore-all lint/style/useFilenamingConvention: App.tsx remains as a small compatibility entry component.
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
+    <main className="min-h-svh bg-background text-foreground">
+      <section className="mx-auto flex max-w-3xl flex-col gap-4 px-6 py-16">
+        <p className="font-medium text-muted-foreground text-sm uppercase tracking-[0.24em]">
+          Ember
+        </p>
+        <h1 className="font-semibold text-4xl tracking-tight">
+          Ember image creation studio
+        </h1>
+        <p className="text-muted-foreground">
+          Ember keeps the creation flow focused, polished, and easy to run.
+        </p>
+      </section>
+    </main>
+  );
 }
 
-export default App
+export default App;

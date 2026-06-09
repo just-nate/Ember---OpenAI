@@ -1,32 +1,55 @@
 {
   "name": "ember",
-  "private": true,
   "version": "0.0.1",
+  "description": "OSS starter kit for production-grade background image generation with Convex, Trigger.dev, GPT Image 2, and Cloudflare R2.",
   "type": "module",
+  "private": false,
+  "license": "MIT",
+  "keywords": [
+    "background-jobs",
+    "image-generation",
+    "convex",
+    "trigger.dev",
+    "cloudflare-r2",
+    "openai",
+    "react",
+    "starter-kit"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "preview": "vite preview",
+    "convex:dev": "convex dev",
+    "trigger:dev": "trigger dev"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@convex-dev/r2": "^0.10.1",
     "@fontsource-variable/inter": "^5.2.8",
     "@tailwindcss/vite": "^4",
+    "@tanstack/react-router": "^1.170.15",
+    "@tanstack/router-devtools": "^1.167.0",
+    "@trigger.dev/sdk": "^4.4.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "convex": "^1.40.0",
     "lucide-react": "^1.17.0",
+    "openai": "^6.42.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "shadcn": "^4.11.0",
     "tailwind-merge": "^3.6.0",
     "tailwindcss": "^4",
-    "tw-animate-css": "^1.4.0"
+    "tw-animate-css": "^1.4.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.4.16",
     "@eslint/js": "^10",
+    "@tanstack/router-plugin": "^1.168.18",
     "@types/node": "^24",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -35,10 +58,13 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17",
+    "husky": "^9.1.7",
+    "lefthook": "^2.1.9",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "typescript": "~6",
     "typescript-eslint": "^8",
+    "ultracite": "7.8.2",
     "vite": "^8"
   }
 }
