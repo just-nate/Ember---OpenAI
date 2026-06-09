@@ -5,13 +5,12 @@ import { JobStatusBadge } from "@/components/job-status-badge";
 import { RetryButton } from "@/components/retry-button";
 import type { Doc } from "../../convex/_generated/dataModel";
 
-export function ResultCard({
-  job,
-  result,
-}: {
+interface ResultCardProps {
   job: Doc<"jobs">;
   result: Doc<"imageResults">;
-}) {
+}
+
+export function ResultCard({ job, result }: ResultCardProps) {
   return (
     <article className="group overflow-hidden border border-border bg-black/50 transition duration-500 hover:-translate-y-1 hover:border-primary/70">
       {result.imageUrl ? (

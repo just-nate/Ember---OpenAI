@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ember">
+  <rect width="64" height="64" rx="10" fill="#0a0a0a"/>
+  <path d="M36 4 14 36h15l-4 24 25-36H35l1-20Z" fill="#1570ef"/>
+  <path d="M36 4 14 36h15l-4 24 25-36H35l1-20Z" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+</svg>
