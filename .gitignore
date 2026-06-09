@@ -32,3 +32,6 @@ skills-lock.json
 
 # Local planning notes
 docs/
+
+# Trigger.dev local build output
+.trigger/
