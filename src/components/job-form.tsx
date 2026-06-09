@@ -57,7 +57,7 @@ export function JobForm() {
         <div className="relative">
           <textarea
             aria-describedby="prompt-count"
-            className="min-h-[34rem] w-full resize-y bg-black/80 px-5 py-6 text-lg leading-8 outline-none transition placeholder:text-muted-foreground focus:bg-black/90 md:min-h-[42rem]"
+            className="min-h-64 w-full resize-y bg-black/80 px-5 py-6 text-lg leading-8 outline-none transition placeholder:text-muted-foreground focus:bg-black/90 md:min-h-80 lg:min-h-[24rem]"
             id="prompt"
             maxLength={4000}
             onChange={(event) => setPrompt(event.target.value)}
