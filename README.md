@@ -4,7 +4,7 @@ Ember is an OSS starter kit for production-grade background image generation. It
 
 Ember is not a generic AI app starter. The v1 scope stays focused on image-generation jobs, progress, retries, storage, and result operations.
 
-![Ember README image](./public/readme/ember-readme-image.png)
+![Ember background image generation pipeline](./public/readme/ember-generated-hero.png)
 
 ## Features
 
