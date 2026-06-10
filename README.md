@@ -2,7 +2,7 @@
 
 Ember is an OSS starter kit for production-grade background image generation. It combines Convex realtime state, Trigger.dev durable workers, GPT Image 2 generation, and Cloudflare R2 image storage.
 
-Ember is not a generic AI app starter. The v1 scope stays focused on image-generation jobs, progress, retries, storage, and result operations.
+Ember is a focused image-generation operations starter: submit prompts, watch durable jobs progress in realtime, store final assets, and recover cleanly from transient failures.
 
 ![Ember background image generation pipeline](./public/readme/ember-generated-hero.png)
 
@@ -90,10 +90,12 @@ Do not commit `.env` or `.env.local`.
 
 ## Convex setup
 
-Run Convex locally:
+Run Convex locally. The package script is the usual project command, and `bunx convex dev` is the direct Convex CLI equivalent:
 
 ```bash
 bun run convex:dev
+# or
+bunx convex dev
 ```
 
 Set worker and R2 values in Convex env, not browser env:
@@ -142,7 +144,7 @@ Use separate terminals:
 
 ```bash
 bun run dev
-bun run convex:dev
+bun run convex:dev # same as: bunx convex dev
 bun run trigger:dev
 ```
 
